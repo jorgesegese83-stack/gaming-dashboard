@@ -1,0 +1,502 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Rajdhani:wght@500;600;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    @apply bg-gamer-bg font-sans text-slate-200 antialiased;
+  }
+}
+
+@layer components {
+  /* ---------- Tarjetas de juego ---------- */
+  .game-card {
+    --accent-rgb: 168 85 247;
+    --platform-rgb: 102 192 244;
+    --platform-tint: 42 71 94;
+    /* Tono aparente del cristal bg-black/40 sobre el fondo cinemático */
+    --card-base: 10 11 15;
+    position: relative;
+    isolation: isolate;
+    /* Cristal: bg-black/40 + border-white/10 (backdrop-blur-xl en el JSX) */
+    border-color: rgb(255 255 255 / 0.1);
+    background: rgb(0 0 0 / 0.4);
+    box-shadow:
+      inset 0 1px 0 0 rgb(255 255 255 / 0.06),
+      0 10px 30px -18px rgb(0 0 0 / 0.9);
+    transition:
+      transform 0.35s cubic-bezier(0.2, 0.8, 0.2, 1),
+      box-shadow 0.35s ease,
+      border-color 0.35s ease;
+  }
+
+  .game-card[data-platform='psn'] {
+    --platform-rgb: 0 112 209;
+    --platform-tint: 0 67 156;
+  }
+
+  .game-card:hover,
+  .game-card:focus-visible {
+    transform: translateY(-6px);
+    border-color: rgb(var(--accent-rgb) / 0.7);
+    box-shadow:
+      inset 0 1px 0 0 rgb(255 255 255 / 0.08),
+      0 0 0 1px rgb(var(--accent-rgb) / 0.35),
+      0 0 28px -4px rgb(var(--accent-rgb) / 0.45),
+      0 24px 48px -20px rgb(var(--accent-rgb) / 0.55);
+  }
+
+  .game-card--perfect {
+    border-color: rgb(245 197 66 / 0.45);
+    background:
+      radial-gradient(120% 60% at 100% 100%, rgb(245 197 66 / 0.1), transparent 70%),
+      rgb(0 0 0 / 0.4);
+  }
+
+  .game-card--perfect:hover,
+  .game-card--perfect:focus-visible {
+    border-color: rgb(253 230 138 / 0.85);
+    box-shadow:
+      inset 0 1px 0 0 rgb(255 255 255 / 0.1),
+      0 0 0 1px rgb(245 197 66 / 0.45),
+      0 0 30px -4px rgb(245 197 66 / 0.5),
+      0 24px 48px -20px rgb(245 197 66 / 0.6);
+  }
+
+  .text-accent {
+    color: rgb(var(--accent-rgb));
+  }
+
+  /* Barra de progreso: color propio del juego con un brillo suave */
+  .bar-accent {
+    background: linear-gradient(90deg, rgb(var(--accent-rgb) / 0.75), rgb(var(--accent-rgb)), rgb(var(--accent-rgb) / 0.75));
+    background-size: 200% 100%;
+    animation: shimmer 4s linear infinite;
+    box-shadow: 0 0 10px rgb(var(--accent-rgb) / 0.45);
+  }
+
+  /* Degradado inferior: la portada se funde con el fondo de la tarjeta */
+  .cover-scrim {
+    background:
+      linear-gradient(
+        to top,
+        rgb(var(--card-base, 13 17 26)) 0%,
+        rgb(var(--card-base, 13 17 26) / 0.85) 18%,
+        rgb(0 0 0 / 0.55) 42%,
+        rgb(0 0 0 / 0.12) 68%,
+        transparent 82%
+      ),
+      linear-gradient(to bottom, rgb(0 0 0 / 0.45) 0%, transparent 30%);
+  }
+
+  /* ---------- Arte de respaldo ---------- */
+  .art-pattern {
+    -webkit-mask-image: radial-gradient(120% 100% at 80% 20%, #000 20%, transparent 85%);
+    mask-image: radial-gradient(120% 100% at 80% 20%, #000 20%, transparent 85%);
+  }
+
+  .art-streak {
+    background: linear-gradient(115deg, transparent 35%, rgb(255 255 255 / 0.07) 45%, transparent 55%);
+  }
+
+  /* ---------- Dorado satinado (Platino) ---------- */
+  .platinum-badge {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    overflow: hidden;
+    color: #3a2804;
+    background: linear-gradient(135deg, #8a6418 0%, #f7d774 22%, #fff3c4 38%, #e2b33c 55%, #9c7420 78%, #f2cf6b 100%);
+    border: 1px solid rgb(255 236 170 / 0.9);
+    text-shadow: 0 1px 0 rgb(255 255 255 / 0.45);
+    box-shadow:
+      inset 0 1px 0 rgb(255 255 255 / 0.75),
+      inset 0 -1px 0 rgb(120 80 10 / 0.6),
+      0 0 0 1px rgb(183 121 31 / 0.55),
+      0 0 16px rgb(245 197 66 / 0.55),
+      0 4px 14px -4px rgb(245 197 66 / 0.6);
+  }
+
+  .platinum-badge::after {
+    content: '';
+    position: absolute;
+    top: -50%;
+    bottom: -50%;
+    left: -60%;
+    width: 40%;
+    background: linear-gradient(90deg, transparent, rgb(255 255 255 / 0.9), transparent);
+    transform: skewX(-20deg);
+    animation: badge-glint 3.2s ease-in-out infinite;
+  }
+
+  .text-gold-satin {
+    background: linear-gradient(180deg, #fff3c4 0%, #f5c542 45%, #b7791f 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    filter: drop-shadow(0 0 10px rgb(245 197 66 / 0.45));
+  }
+
+  /* Barra dorada brillante para Platino / 100% */
+  .bar-gold {
+    background: linear-gradient(90deg, #b7791f, #f5c542 30%, #fffbe6 50%, #f5c542 70%, #b7791f);
+    background-size: 200% 100%;
+    animation: shimmer 2.8s linear infinite;
+    box-shadow:
+      0 0 8px rgb(253 230 138 / 0.8),
+      0 0 18px rgb(245 197 66 / 0.55);
+  }
+
+  /* ---------- Cabecera de perfil ---------- */
+}
+
+@layer utilities {
+  /* ---------- Fondo cinemático ---------- */
+  .cinematic-art {
+    filter: saturate(1.1);
+  }
+
+  .text-game {
+    color: rgb(var(--game-rgb));
+    transition: color 0.7s ease-out;
+  }
+
+  /* ---------- Barra de XP: color del juego activo ---------- */
+  .xp-fill {
+    background: linear-gradient(90deg, rgb(var(--game-rgb) / 0.6) 0%, rgb(var(--game-rgb)) 100%);
+    box-shadow:
+      inset 0 1px 0 rgb(255 255 255 / 0.3),
+      0 0 12px rgb(var(--game-rgb) / 0.4);
+  }
+
+  .xp-tip {
+    background: radial-gradient(circle, #ffffff 0%, rgb(var(--game-rgb)) 75%);
+    box-shadow:
+      0 0 4px 1px #ffffff,
+      0 0 14px 4px rgb(var(--game-rgb) / 0.6);
+    animation: tip-flicker 2.4s ease-in-out infinite;
+  }
+
+  /* ---------- Chip de nivel metalizado ---------- */
+  .level-chip {
+    border: 1px solid transparent;
+    background:
+      linear-gradient(180deg, #1b2130, #0c1018) padding-box,
+      linear-gradient(135deg, #f1f5f9, #64748b 45%, rgb(var(--game-rgb)) 100%) border-box;
+    box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.12);
+  }
+
+  .level-chip__value {
+    background: linear-gradient(180deg, #ffffff 0%, #e2e8f0 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+
+  .level-chip--next {
+    background:
+      linear-gradient(180deg, #121620, #0a0d14) padding-box,
+      linear-gradient(135deg, rgb(148 163 184 / 0.5), rgb(148 163 184 / 0.2)) border-box;
+    box-shadow: none;
+    opacity: 0.75;
+  }
+
+  /* ---------- Fondo técnico generado ---------- */
+  /* Retícula: mayor de 80px (alineada con max-w-7xl = 16 × 80px) + menor de 16px */
+  .tech-grid {
+    background-image:
+      linear-gradient(rgb(255 255 255 / 0.06) 1px, transparent 1px),
+      linear-gradient(90deg, rgb(255 255 255 / 0.06) 1px, transparent 1px),
+      linear-gradient(rgb(255 255 255 / 0.025) 1px, transparent 1px),
+      linear-gradient(90deg, rgb(255 255 255 / 0.025) 1px, transparent 1px);
+    background-size:
+      80px 80px,
+      80px 80px,
+      16px 16px,
+      16px 16px;
+  }
+
+  /* Más presente arriba y en los laterales, se apaga hacia abajo */
+  .tech-grid-mask {
+    -webkit-mask-image:
+      radial-gradient(ellipse 70% 55% at 50% 0%, #000 0%, transparent 100%),
+      linear-gradient(90deg, #000 0%, rgb(0 0 0 / 0.25) 30%, rgb(0 0 0 / 0.25) 70%, #000 100%);
+    mask-image:
+      radial-gradient(ellipse 70% 55% at 50% 0%, #000 0%, transparent 100%),
+      linear-gradient(90deg, #000 0%, rgb(0 0 0 / 0.25) 30%, rgb(0 0 0 / 0.25) 70%, #000 100%);
+  }
+
+  /* Base con profundidad: azul noche arriba (estilo biblioteca de Steam) → negro abajo */
+  .tech-base {
+    background: linear-gradient(180deg, #0c1222 0%, #080c18 30%, #05070d 65%, #04060a 100%);
+  }
+
+  /* Campos de luz volumétrica en los laterales */
+  .tech-aurora--a {
+    background:
+      radial-gradient(ellipse 30% 40% at 12% 30%, rgb(109 40 217 / 0.22), transparent 70%),
+      radial-gradient(ellipse 25% 30% at 20% 85%, rgb(30 64 175 / 0.16), transparent 70%);
+    animation: aurora-drift-a 38s ease-in-out infinite alternate;
+  }
+
+  .tech-aurora--b {
+    background:
+      radial-gradient(ellipse 30% 40% at 88% 60%, rgb(8 145 178 / 0.18), transparent 70%),
+      radial-gradient(ellipse 25% 30% at 80% 12%, rgb(79 70 229 / 0.14), transparent 70%);
+    animation: aurora-drift-b 44s ease-in-out infinite alternate;
+  }
+
+  /* Cono de luz superior con el tono del juego activo */
+  .tech-spotlight {
+    background:
+      radial-gradient(ellipse 45% 35% at 50% -8%, rgb(var(--game-rgb, 148 163 184) / 0.14), transparent 70%),
+      radial-gradient(ellipse 70% 50% at 50% -15%, rgb(255 255 255 / 0.05), transparent 75%);
+    transition: background 0.7s ease-out;
+  }
+
+  /* Haz de luz diagonal, como un foco de escenario */
+  .tech-shaft {
+    background:
+      linear-gradient(115deg, transparent 20%, rgb(255 255 255 / 0.025) 32%, transparent 44%),
+      linear-gradient(115deg, transparent 52%, rgb(255 255 255 / 0.015) 60%, transparent 68%);
+  }
+
+  .tech-hatch {
+    background-image: repeating-linear-gradient(-45deg, rgb(255 255 255 / 0.05) 0 1px, transparent 1px 9px);
+  }
+
+  .tech-hatch--left {
+    -webkit-mask-image: linear-gradient(to left, #000, transparent);
+    mask-image: linear-gradient(to left, #000, transparent);
+  }
+
+  .tech-hatch--right {
+    -webkit-mask-image: linear-gradient(to right, #000, transparent);
+    mask-image: linear-gradient(to right, #000, transparent);
+  }
+
+  /* Marca en cruz sobre las guías */
+  .tech-cross::before,
+  .tech-cross::after {
+    content: '';
+    position: absolute;
+    background: rgb(255 255 255 / 0.35);
+  }
+
+  .tech-cross::before {
+    left: 50%;
+    top: 0;
+    width: 1px;
+    height: 100%;
+  }
+
+  .tech-cross::after {
+    top: 50%;
+    left: 0;
+    height: 1px;
+    width: 100%;
+  }
+
+  /* Haz de luz que recorre las guías verticales */
+  .tech-beam {
+    top: 0;
+    height: 140px;
+    background: linear-gradient(to bottom, transparent, rgb(34 211 238 / 0.7), transparent);
+    box-shadow: 0 0 10px rgb(34 211 238 / 0.5);
+    animation: beam-fall 9s linear infinite;
+  }
+
+  .tech-beam--late {
+    background: linear-gradient(to bottom, transparent, rgb(168 85 247 / 0.7), transparent);
+    box-shadow: 0 0 10px rgb(168 85 247 / 0.5);
+    animation-delay: -4.5s;
+  }
+
+  .tech-vignette {
+    background: radial-gradient(ellipse 110% 85% at 50% 40%, transparent 55%, rgb(0 0 0 / 0.6) 100%);
+  }
+
+  .tech-noise {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+    opacity: 0.035;
+    mix-blend-mode: overlay;
+  }
+
+  /* ---------- Vista de detalle: arte nítido que se funde hacia abajo ---------- */
+  .detail-overlay {
+    background:
+      linear-gradient(to bottom, rgb(4 6 10 / 0.35) 0%, rgb(4 6 10 / 0.1) 25%, rgb(4 6 10 / 0.55) 55%, #04060a 85%),
+      linear-gradient(to right, rgb(4 6 10 / 0.75) 0%, transparent 55%);
+  }
+
+  /* ---------- Marco de logro: esquinas cortadas estilo cyberpunk ---------- */
+  .ach-frame {
+    --chamfer: 12px;
+    clip-path: polygon(var(--chamfer) 0, 100% 0, 100% calc(100% - var(--chamfer)), calc(100% - var(--chamfer)) 100%, 0 100%, 0 var(--chamfer));
+    /* El fondo del contenedor actúa como borde de 1px */
+    background: rgb(255 255 255 / 0.1);
+    transition: filter 0.3s ease;
+  }
+
+  .ach-frame__inner {
+    position: absolute;
+    inset: 1px;
+    clip-path: inherit;
+    background:
+      linear-gradient(135deg, rgb(255 255 255 / 0.04), transparent 60%),
+      #0b0e16;
+  }
+
+  .ach-frame--lit {
+    background: linear-gradient(135deg, rgb(var(--ach-rgb) / 0.9), rgb(var(--ach-rgb) / 0.25) 55%, rgb(var(--ach-rgb) / 0.7));
+  }
+
+  .ach-frame--lit .ach-frame__inner {
+    background:
+      radial-gradient(circle at 50% 45%, rgb(var(--ach-rgb) / 0.22), transparent 70%),
+      repeating-linear-gradient(0deg, rgb(255 255 255 / 0.025) 0 1px, transparent 1px 3px),
+      #0b0e16;
+  }
+
+  /* Las sombras no atraviesan clip-path: el brillo va en el padre del marco */
+  .group:hover .ach-frame--lit {
+    filter: brightness(1.15);
+  }
+
+  .ach-frame__glyph {
+    color: rgb(var(--ach-rgb));
+    filter: drop-shadow(0 0 5px rgb(var(--ach-rgb) / 0.75));
+  }
+
+  /* ---------- Iconos de estadísticas ---------- */
+  .stat-icon {
+    --tile-rgb: var(--game-rgb);
+    color: rgb(var(--tile-rgb));
+    border-color: rgb(var(--tile-rgb) / 0.3);
+    background: radial-gradient(circle at 30% 20%, rgb(var(--tile-rgb) / 0.25), rgb(var(--tile-rgb) / 0.06) 70%);
+    box-shadow:
+      inset 0 1px 0 rgb(255 255 255 / 0.1),
+      0 0 16px -6px rgb(var(--tile-rgb) / 0.6);
+    transition:
+      transform 0.3s ease,
+      color 0.7s ease-out,
+      border-color 0.7s ease-out;
+  }
+
+  .stat-icon--platinum {
+    --tile-rgb: 203 213 225;
+    color: #f1f5f9;
+  }
+
+  .stat-icon--gold {
+    --tile-rgb: 245 197 66;
+  }
+
+  /* ---------- Avatar ---------- */
+  .avatar-halo {
+    background: radial-gradient(circle, rgb(var(--game-rgb) / 0.35) 0%, transparent 70%);
+    filter: blur(10px);
+  }
+
+  .avatar-neon {
+    animation: avatar-pulse 3.2s ease-in-out infinite;
+  }
+
+  .scrollbar-neon {
+    scrollbar-width: thin;
+    scrollbar-color: rgb(255 255 255 / 0.25) transparent;
+  }
+
+  .scrollbar-neon::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  .scrollbar-neon::-webkit-scrollbar-thumb {
+    background: rgb(255 255 255 / 0.25);
+    border-radius: 9999px;
+  }
+}
+
+@keyframes badge-glint {
+  0%,
+  55% {
+    left: -60%;
+  }
+  100% {
+    left: 140%;
+  }
+}
+
+@keyframes aurora-drift-a {
+  from {
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+  to {
+    transform: translate3d(4%, 6%, 0) scale(1.08);
+  }
+}
+
+@keyframes aurora-drift-b {
+  from {
+    transform: translate3d(0, 0, 0) scale(1.05);
+  }
+  to {
+    transform: translate3d(-5%, -4%, 0) scale(1);
+  }
+}
+
+@keyframes beam-fall {
+  0% {
+    transform: translateY(-160px);
+    opacity: 0;
+  }
+  10%,
+  90% {
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(100vh);
+    opacity: 0;
+  }
+}
+
+@keyframes shimmer {
+  from {
+    background-position: 200% 0;
+  }
+  to {
+    background-position: -200% 0;
+  }
+}
+
+@keyframes tip-flicker {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.75;
+  }
+}
+
+@keyframes avatar-pulse {
+  0%,
+  100% {
+    box-shadow: 0 0 18px 2px rgb(var(--game-rgb) / 0.3);
+  }
+  50% {
+    box-shadow: 0 0 28px 5px rgb(var(--game-rgb) / 0.45);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
